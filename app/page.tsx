@@ -3,11 +3,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getTimeAgo } from "./utils/time";
-import { type Post } from "./mocks/posts";
+import { posts as initialPosts, type Post } from "./mocks/posts";
 import { supabase } from "./utils/supabase";
-
-const defaultAvatar =
-  "https://sqlkltbinziklapgzwif.supabase.co/storage/v1/object/public/Supagram/th.webp";
 
 function HeartIcon({ filled }: { filled: boolean }) {
   if (filled) {
@@ -47,14 +44,14 @@ function PostCard({ post, onLike }: { post: Post; onLike: (id: number | string) 
       <div className="flex items-center gap-3 p-4">
         <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary">
           <Image
-            src={post.user?.avatar || 'https://sqlkltbinziklapgzwif.supabase.co/storage/v1/object/public/Supagram/th.webp'}
+            src={post.user?.avatar || 'https://zjrkhyvcebchjfebpbiw.supabase.co/storage/v1/object/public/supagram/profiles/847591592417500868.jpg'}
             alt={post.user?.username || 'default user'}
             fill
             className="object-cover"
           />
         </div>
         <div className="flex flex-col">
-          <span className="font-semibold text-foreground">{post.user?.username || "Drax"}</span>
+          <span className="font-semibold text-foreground">{post.user?.username || 'default user'}</span>
           <span className="text-xs text-foreground/50">{getTimeAgo(post.created_at)}</span>
         </div>
       </div>
@@ -63,15 +60,16 @@ function PostCard({ post, onLike }: { post: Post; onLike: (id: number | string) 
       <div className="relative w-full aspect-square">
         <Image
           src={post.image_url}
-          alt={`Post de ${post.user?.username || "Drax"}`}
+          alt={`Post de ${post.user?.username || 'default user'}`}
           fill
           className="object-cover"
         />
       </div>
 
-      {/* Acciones, likes y descripción */}
-      <div className="px-4 pb-4 pt-3">
-        <div className="flex items-center">
+      {/* Acciones y caption */}
+      <div className="p-4">
+        {/* Botón de like con contador */}
+        <div className="flex items-center gap-2">
           <button
             onClick={() => onLike(post.id)}
             className="hover:scale-110 transition-transform active:scale-95"
@@ -79,14 +77,14 @@ function PostCard({ post, onLike }: { post: Post; onLike: (id: number | string) 
           >
             <HeartIcon filled={post.isLiked} />
           </button>
+          <span className="font-semibold text-foreground">
+            {post.likes.toLocaleString()} likes
+          </span>
         </div>
 
-        <p className="mt-2 text-sm font-semibold text-foreground">
-          {post.likes.toLocaleString()} likes
-        </p>
-
-        <p className="mt-2 leading-5 text-foreground">
-          <span className="font-semibold">{post.user?.username || "Drax"}</span>{" "}
+        {/* Caption */}
+        <p className="mt-2 text-foreground">
+          <span className="font-semibold">{post.user?.username || 'default user'}</span>{" "}
           <span className="text-foreground/80">{post.caption}</span>
         </p>
       </div>
@@ -95,35 +93,26 @@ function PostCard({ post, onLike }: { post: Post; onLike: (id: number | string) 
 }
 
 export default function Home() {
-  const [posts, setPosts] = useState<Post[]>([]);
 
-  useEffect(() => {
-    async function getPosts() {
-      const { data, error } = await supabase
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("No se pudieron cargar los posts", error);
-        return;
+    useEffect(() => {
+      async function getPosts() {
+        const { data: posts } = await supabase
+        .from('posts')
+        .select('*')
+        //.gte('likes', 50)
+        .order('created_at', { ascending: false })
+        .range(0, 11)
+        
+        if (posts) {
+          setPosts(posts)
+          console.log(posts)
+        }
       }
+      
+      getPosts()
+    }, [])
 
-      setPosts(
-        (data ?? []).map((post) => ({
-          ...post,
-          user: {
-            username: "Drax",
-            avatar: defaultAvatar,
-          },
-          created_at: new Date(post.created_at),
-          isLiked: false,
-        })) as Post[]
-      );
-    }
-
-    getPosts();
-  }, []);
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
 
   const handleLike = (postId: number | string) => {
     setPosts((prevPosts) =>
@@ -145,7 +134,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-card-bg border-b border-border">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-center">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          Supagram ☔
+            Instagram
           </h1>
         </div>
       </header>
