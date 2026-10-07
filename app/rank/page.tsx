@@ -30,7 +30,7 @@ export default function RankPage() {
     async function getPosts() {
       const { data: posts } = await supabase
       .from('posts')
-      .select('*')
+      .select('*, user:profiles(username, avatar:avatar_url)')
       .gte('likes', 50)
       .order('likes', { ascending: false })
       //.range(0, 11)

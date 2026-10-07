@@ -153,7 +153,7 @@ export default function EditProfilePage() {
       if (avatarFile) {
         const fileExt = avatarFile.name.split(".").pop();
         const fileName = `${profile.id}-${Date.now()}.${fileExt}`;
-        const filePath = `profile/${fileName}`;
+        const filePath = `profile/${profile.id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from("supagram")

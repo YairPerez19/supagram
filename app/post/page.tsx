@@ -33,12 +33,21 @@ export default function CreatePage() {
   };
 
   const uploadAndCreatePost = async (file: File) => {
-    const userId = "11111111-1111-1111-1111-111111111111";
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error("Inicia sesión para publicar una foto.");
+    }
+
+    const userId = user.id;
 
     // 1️⃣ Preparar nombre del archivo
     const fileExt = file.name.split(".").pop();
     const fileName = `${file.name}-${Date.now()}.${fileExt}`;
-    const filePath = `images/${fileName}`;
+    const filePath = `images/${userId}/${fileName}`;
 
     // 2️⃣ Subir al bucket "images"
     const { data: uploadData, error: uploadError } = await supabase.storage

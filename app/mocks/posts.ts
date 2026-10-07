@@ -2,8 +2,8 @@ export interface Post {
   id: number | string;
   user: {
     username: string;
-    avatar: string;
-  };
+    avatar: string | null;
+  } | null;
   image_url: string;
   caption: string;
   likes: number;

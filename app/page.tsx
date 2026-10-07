@@ -15,7 +15,7 @@ export default function Home() {
       async function getPosts() {
         const { data: posts } = await supabase
         .from('posts')
-        .select('*')
+        .select('*, user:profiles(username, avatar:avatar_url)')
         //.gte('likes', 50)
         .order('created_at', { ascending: false })
         .range(0, 11)
