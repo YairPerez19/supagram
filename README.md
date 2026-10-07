@@ -28,7 +28,7 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
    ```
 
-3. Ejecuta `supabase/migrations/20261007000000_initial_schema.sql` desde el SQL Editor del proyecto, o enlaza Supabase CLI con `npx supabase link` y ejecuta `npx supabase db push`.
+3. Ejecuta `supabase/migrations/20261007000000_initial_schema.sql` desde el SQL Editor del proyecto. También puedes usar Supabase CLI: ejecuta `npx supabase init` si aún no existe `supabase/config.toml`, enlaza el proyecto con `npx supabase link --project-ref <project-ref>` y aplica la migración con `npx supabase db push`.
 4. En Authentication → URL Configuration, establece la URL de producción de Vercel y agrega también `http://localhost:3000/**` como URL de redirección.
 
 La migración crea perfiles vinculados a Auth, publicaciones, políticas de acceso y el bucket público `supagram`. Las subidas requieren una sesión iniciada.
