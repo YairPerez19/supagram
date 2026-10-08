@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { getTimeAgo } from "../utils/time";
 
 import type { Post } from "../mocks/posts";
-import { supabase } from "../lib/supabase";
+import { fetchPosts } from "../lib/post-data";
 import { getPostImageSrc } from "../lib/post-images";
 import Modal from "../components/Modal";
 
@@ -29,17 +29,7 @@ export default function RankPage() {
   
   useEffect(() => {
     async function getPosts() {
-      const { data: posts } = await supabase
-      .from('posts')
-      .select('*, user:profiles(username, avatar:avatar_url)')
-      .gte('likes', 50)
-      .order('likes', { ascending: false })
-      //.range(0, 11)
-      
-      if (posts) {
-        setPosts(posts)
-        console.log(posts)
-      }
+      setPosts(await fetchPosts({ orderBy: "likes", ascending: false, minimumLikes: 50 }));
     }
     
     getPosts()

@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getTimeAgo } from "./utils/time";
-import { Post as initialPosts, type Post } from "./mocks/posts";
-import { supabase } from "./lib/supabase";
+import type { Post } from "./mocks/posts";
+import { fetchPosts } from "./lib/post-data";
 import PostCard from "./components/PostCard"; 
 
 
@@ -13,17 +12,7 @@ export default function Home() {
 
     useEffect(() => {
       async function getPosts() {
-        const { data: posts } = await supabase
-        .from('posts')
-        .select('*, user:profiles(username, avatar:avatar_url)')
-        //.gte('likes', 50)
-        .order('created_at', { ascending: false })
-        .range(0, 11)
-        
-        if (posts) {
-          setPosts(posts)
-          console.log(posts)
-        }
+        setPosts(await fetchPosts({ orderBy: "created_at", ascending: false, limit: 12 }));
       }
       
       getPosts()
