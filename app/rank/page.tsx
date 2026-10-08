@@ -6,6 +6,7 @@ import { getTimeAgo } from "../utils/time";
 
 import type { Post } from "../mocks/posts";
 import { supabase } from "../lib/supabase";
+import { getPostImageSrc } from "../lib/post-images";
 import Modal from "../components/Modal";
 
 function HeartIcon() {
@@ -67,7 +68,7 @@ export default function RankPage() {
               className="relative aspect-square overflow-hidden group"
             >
               <Image
-                src={post.image_url}
+                src={getPostImageSrc(post.image_url, post.id)}
                 alt={`Post con ${post.likes} likes`}
                 fill
                 className="object-cover transition-transform group-hover:scale-105"

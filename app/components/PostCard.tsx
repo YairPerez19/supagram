@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Post } from "../mocks/posts";
 import { getTimeAgo } from "../utils/time";
+import { getPostImageSrc } from "../lib/post-images";
 import HeartIcon from "./HeartIcon";
 
 export default function PostCard({ post, onLike }: { post: Post; onLike: (id: number | string) => void }) {
@@ -25,7 +26,7 @@ export default function PostCard({ post, onLike }: { post: Post; onLike: (id: nu
       {/* Imagen del post */}
       <div className="relative w-full aspect-square">
         <Image
-          src={post.image_url}
+          src={getPostImageSrc(post.image_url, post.id)}
           alt={`Post de ${post.user?.username || 'default user'}`}
           fill
           className="object-cover"
